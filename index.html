@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nukkad Cafe | Chai, Momos &amp; Shakes in Laxmi Nagar, Delhi</title>
+<meta name="description" content="Nukkad Cafe in Laxmi Nagar, Delhi. See the menu, build your order and send it on WhatsApp.">
+<meta name="theme-color" content="#1B2559">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- EDIT: Google reads this to understand your business. Change the name, phone and address. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CafeOrCoffeeShop",
+  "name": "Nukkad Cafe",
+  "telephone": "+919800000000",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Shop 12, Vikas Marg",
+    "addressLocality": "Laxmi Nagar, Delhi",
+    "postalCode": "110092",
+    "addressCountry": "IN"
+  },
+  "openingHours": "Mo-Su 10:00-23:00"
+}
+</script>
+
+<style>
+  :root {
+    --ink: #1B2559;
+    --ink-deep: #141B45;
+    --marigold: #F5B31B;
+    --paper: #F6F7FB;
+    --text: #1B1F33;
+    --muted: #565C80;
+    --wa: #12853F;
+    --line: #D9DCEB;
+    --dock: 68px;
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Hind', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--paper);
+    padding-bottom: calc(var(--dock) + 8px + env(safe-area-inset-bottom, 0px));
+  }
+  body.has-cart { padding-bottom: calc(var(--dock) + 84px + env(safe-area-inset-bottom, 0px)); }
+  body:has(dialog[open]) { overflow: hidden; }
+  h1, h2, h3 {
+    font-family: 'Bricolage Grotesque', 'Hind', system-ui, sans-serif;
+    line-height: 1.1;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .hero :focus-visible, footer :focus-visible { outline-color: #fff; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+  .icon { width: 20px; height: 20px; fill: currentColor; flex: none; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 48px; padding: 0 22px;
+    border: 2px solid transparent; border-radius: 12px;
+    font-family: inherit; font-size: 1.05rem; font-weight: 600; text-decoration: none; cursor: pointer;
+  }
+  .btn-call { background: var(--marigold); color: var(--ink-deep); }
+  .btn-wa { background: var(--wa); color: #fff; }
+  .btn-map { border-color: rgba(255, 255, 255, .55); color: #fff; }
+  .btn-solid { background: var(--ink); color: #fff; }
+
+  /* Hero: painted shop signboard */
+  .hero { background: var(--ink); color: #fff; padding: 40px 0 44px; }
+  .board {
+    position: relative; text-align: center;
+    background: var(--marigold); color: var(--ink-deep);
+    border-radius: 16px; padding: 36px 22px;
+    animation: hang .6s ease-out both;
+  }
+  .board::before {
+    content: ""; position: absolute; inset: 8px;
+    border: 3px solid var(--ink-deep); border-radius: 9px; pointer-events: none;
+  }
+  .board h1 { font-size: clamp(2.6rem, 10vw, 5rem); font-weight: 800; letter-spacing: -.025em; }
+  .board p { margin-top: 8px; font-size: 1.05rem; font-weight: 600; }
+  @keyframes hang { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+
+  .tagline { margin-top: 28px; max-width: 30ch; font-size: 1.3rem; line-height: 1.4; }
+  .status {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 18px; padding: 6px 14px; border-radius: 99px;
+    background: rgba(255, 255, 255, .12); font-size: .95rem; font-weight: 500;
+  }
+  .status .dot { width: 10px; height: 10px; border-radius: 50%; background: #9AA0C0; }
+  .status.open .dot { background: #3FD27F; }
+  .status.closed .dot { background: #FF7A66; }
+  .hero-actions { display: none; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+
+  /* Sections */
+  .section { padding: 56px 0; }
+  .section h2 { font-size: clamp(1.9rem, 6vw, 2.6rem); font-weight: 800; letter-spacing: -.02em; color: var(--ink); }
+  .sub { margin-top: 8px; color: var(--muted); }
+  .sub .veg, .sub .nv { vertical-align: -2px; margin: 0 2px; }
+  [data-order-only] { display: none; }
+  .ordering [data-order-only] { display: inline; }
+
+  /* Menu */
+  .menu { display: grid; gap: 36px 56px; margin-top: 32px; }
+  .menu h3 {
+    display: inline-block; margin-bottom: 12px; padding-bottom: 8px;
+    font-size: 1.4rem; color: var(--ink); border-bottom: 3px solid var(--marigold);
+  }
+  .menu ul { list-style: none; padding: 0; }
+  .menu li { display: flex; align-items: baseline; gap: 8px; padding: 5px 0; }
+  .leader { flex: 1; min-width: 12px; border-bottom: 2px dotted #B9BEDA; transform: translateY(-4px); }
+  .price { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .ctl { flex: none; align-self: center; margin-left: 4px; }
+  .veg, .nv {
+    flex: none; display: inline-grid; place-items: center;
+    width: 14px; height: 14px; border: 2px solid; border-radius: 3px; transform: translateY(2px);
+  }
+  .veg { border-color: #1F9D55; }
+  .nv { border-color: #C4382A; }
+  .veg::after, .nv::after { content: ""; width: 6px; height: 6px; border-radius: 50%; }
+  .veg::after { background: #1F9D55; }
+  .nv::after { background: #C4382A; }
+
+  /* Add button and quantity stepper */
+  .add {
+    min-height: 40px; min-width: 66px; padding: 0 14px;
+    border: 2px solid var(--ink); border-radius: 10px; background: #fff; color: var(--ink);
+    font-family: inherit; font-size: .95rem; font-weight: 600; cursor: pointer;
+  }
+  .stepper {
+    display: inline-flex; align-items: center;
+    border-radius: 10px; background: var(--ink); color: #fff; overflow: hidden;
+  }
+  .stepper button {
+    width: 42px; height: 40px; border: 0; background: none; color: #fff;
+    font-family: inherit; font-size: 1.3rem; line-height: 1; cursor: pointer;
+  }
+  .stepper button:focus-visible { outline-color: var(--marigold); outline-offset: -4px; }
+  .stepper .qty { min-width: 24px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* Floating "view order" bar */
+  .cartbar {
+    position: fixed; z-index: 11;
+    left: 12px; right: 12px;
+    bottom: calc(var(--dock) + 10px + env(safe-area-inset-bottom, 0px));
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    min-height: 56px; padding: 0 18px;
+    border: 0; border-radius: 14px; background: var(--marigold); color: var(--ink-deep);
+    font-family: inherit; font-size: 1.05rem; font-weight: 600; cursor: pointer;
+    box-shadow: 0 6px 20px rgba(20, 27, 69, .28);
+  }
+  .cartbar .go { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Order sheet */
+  dialog {
+    width: min(560px, 100%); max-width: 100%; margin: auto auto 0; padding: 0;
+    border: 0; border-radius: 20px 20px 0 0; background: #fff; color: var(--text); overflow: hidden;
+  }
+  dialog::backdrop { background: rgba(20, 27, 69, .55); }
+  .sheet { display: flex; flex-direction: column; max-height: 90vh; max-height: 90dvh; }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 6px; }
+  .sheet-head h2 { font-size: 1.6rem; font-weight: 800; color: var(--ink); }
+  .close {
+    width: 44px; height: 44px; border: 0; border-radius: 10px; background: var(--paper);
+    color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer;
+  }
+  .sheet-body { overflow-y: auto; padding: 0 20px 12px; }
+  .cart-list { list-style: none; padding: 0; }
+  .cart-list li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .ci-name { flex: 1; }
+  .ci-price { min-width: 64px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .empty { padding: 20px 0; color: var(--muted); }
+  .total {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 16px 0 4px; font-family: 'Bricolage Grotesque', 'Hind', system-ui, sans-serif;
+    font-size: 1.4rem; font-weight: 800; color: var(--ink);
+  }
+  .field { display: block; margin-top: 14px; font-weight: 600; font-size: .95rem; color: var(--ink); }
+  .field input {
+    display: block; width: 100%; min-height: 48px; margin-top: 6px; padding: 0 14px;
+    border: 2px solid var(--line); border-radius: 10px; background: #fff; color: var(--text);
+    font-family: inherit; font-size: 1.0625rem; font-weight: 400;
+  }
+  .field input:focus { border-color: var(--ink); }
+  .sheet-foot { padding: 14px 20px calc(16px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); }
+  .sheet-foot .btn { width: 100%; }
+  .btn.disabled { opacity: .45; pointer-events: none; }
+  .foot-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
+  .hint { font-size: .9rem; color: var(--muted); }
+  .clear {
+    flex: none; min-height: 44px; padding: 0 4px; border: 0; background: none;
+    color: var(--muted); font-family: inherit; font-size: .95rem; text-decoration: underline; cursor: pointer;
+  }
+
+  /* Order type, payment, UPI */
+  .grp { margin: 18px 0 0; padding: 0; border: 0; min-width: 0; }
+  .lbl { display: block; padding: 0; font-size: .95rem; font-weight: 600; color: var(--ink); }
+  .seg { display: flex; gap: 8px; margin-top: 8px; }
+  .seg label { position: relative; flex: 1; }
+  .seg input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+  .seg span {
+    display: flex; align-items: center; justify-content: center; min-height: 48px;
+    border: 2px solid var(--line); border-radius: 10px; background: #fff;
+    font-weight: 600; color: var(--ink);
+  }
+  .seg input:checked + span { border-color: var(--ink); background: var(--ink); color: #fff; }
+  .seg input:focus-visible + span { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .opt {
+    display: flex; align-items: center; gap: 10px; min-height: 48px; margin-top: 8px; padding: 0 14px;
+    border: 2px solid var(--line); border-radius: 10px; font-weight: 500; cursor: pointer;
+  }
+  .opt input { width: 20px; height: 20px; margin: 0; accent-color: var(--ink); }
+  .opt:has(input:checked) { border-color: var(--ink); background: var(--paper); }
+  .upi-box { margin-top: 14px; padding: 4px 16px 18px; border-radius: 12px; background: var(--paper); }
+  .upi-box .btn { width: 100%; margin-top: 14px; }
+  .upi-box .hint { margin-top: 8px; }
+  .btn-line { border-color: var(--ink); background: #fff; color: var(--ink); }
+  .upi-qr { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); text-align: center; }
+  .upi-qr .or { font-weight: 600; color: var(--ink); }
+  .upi-qr img { display: block; width: min(280px, 100%); height: auto; margin: 12px auto 0; border-radius: 12px; background: #fff; }
+  .upi-qr .hint { margin-top: 10px; }
+  .code { margin-left: 6px; font-family: 'Hind', system-ui, sans-serif; font-size: 1rem; font-weight: 600; color: var(--muted); }
+
+  /* Visit */
+  .visit { background: #fff; border-top: 1px solid var(--line); }
+  .visit-grid { display: grid; gap: 32px; margin-top: 28px; }
+  .visit dt { font-weight: 600; color: var(--ink); }
+  .visit dd { margin: 2px 0 18px; }
+  .visit-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .visit .btn-map { border-color: var(--ink); color: var(--ink); }
+
+  /* Footer */
+  footer { background: var(--ink-deep); color: #C9CDE6; padding: 28px 0; font-size: .95rem; }
+  footer a { color: #fff; }
+
+  /* Bottom action bar for phones */
+  .dock {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    display: flex; gap: 8px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: #fff; box-shadow: 0 -1px 0 var(--line);
+  }
+  .dock .btn { flex: 1; padding: 0 8px; font-size: 1rem; }
+  .dock .btn-map { border-color: var(--ink); color: var(--ink); }
+
+  @media (min-width: 720px) {
+    body, body.has-cart { padding-bottom: 0; }
+    body.has-cart { padding-bottom: 96px; }
+    .dock { display: none; }
+    .hero-actions { display: flex; }
+    .menu, .visit-grid { grid-template-columns: 1fr 1fr; }
+    .cartbar { left: 50%; right: auto; width: min(560px, calc(100% - 24px)); transform: translateX(-50%); bottom: 20px; }
+    dialog { margin: auto; border-radius: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .board { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-call" viewBox="0 0 24 24"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></symbol>
+</svg>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="board">
+      <h1 data-text="name">Nukkad Cafe</h1>
+      <p>Laxmi Nagar, Delhi</p>
+    </div>
+    <p class="tagline">Chai, momos aur ek achi baithak.</p>
+    <p class="status" id="status" role="status"><span class="dot"></span><span id="status-text">Checking hours…</span></p>
+    <div class="hero-actions">
+      <a class="btn btn-call" data-call href="tel:+919800000000"><svg class="icon"><use href="#i-call"/></svg>Call now</a>
+      <a class="btn btn-wa" data-wa href="https://wa.me/919800000000"><svg class="icon"><use href="#i-chat"/></svg>WhatsApp</a>
+      <a class="btn btn-map" data-map href="https://www.google.com/maps/search/?api=1&query=Laxmi+Nagar+Delhi"><svg class="icon"><use href="#i-pin"/></svg>Directions</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- EDIT: change item names and prices. Use class="veg" or class="nv" (non-veg).
+       Every item name must be different from the others. -->
+  <section class="section" id="menu">
+    <div class="wrap">
+      <h2>Menu</h2>
+      <p class="sub">Prices in ₹. <span class="veg" role="img" aria-label="Green mark"></span> is veg, <span class="nv" role="img" aria-label="Red mark"></span> is non-veg.<span data-order-only> Tap Add to build your order, then send it on WhatsApp.</span></p>
+
+      <div class="menu">
+        <div>
+          <h3>Chai &amp; Coffee</h3>
+          <ul>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">Masala Chai</span><span class="leader"></span><span class="price">20</span></li>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">Kulhad Chai</span><span class="leader"></span><span class="price">30</span></li>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">Hot Coffee</span><span class="leader"></span><span class="price">60</span></li>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">Cold Coffee</span><span class="leader"></span><span class="price">90</span></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Snacks</h3>
+          <ul>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">Veg Sandwich</span><span class="leader"></span><span class="price">70</span></li>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">Cheese Maggi</span><span class="leader"></span><span class="price">80</span></li>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">French Fries</span><span class="leader"></span><span class="price">90</span></li>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">Paneer Tikka Roll</span><span class="leader"></span><span class="price">110</span></li>
+            <li class="item"><span class="nv" role="img" aria-label="Non-veg"></span><span class="name">Chicken Roll</span><span class="leader"></span><span class="price">130</span></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Momos</h3>
+          <ul>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">Veg Steamed Momos</span><span class="leader"></span><span class="price">60</span></li>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">Paneer Fried Momos</span><span class="leader"></span><span class="price">90</span></li>
+            <li class="item"><span class="nv" role="img" aria-label="Non-veg"></span><span class="name">Chicken Steamed Momos</span><span class="leader"></span><span class="price">80</span></li>
+            <li class="item"><span class="nv" role="img" aria-label="Non-veg"></span><span class="name">Chicken Tandoori Momos</span><span class="leader"></span><span class="price">110</span></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Shakes</h3>
+          <ul>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">Mango Shake</span><span class="leader"></span><span class="price">90</span></li>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">Oreo Shake</span><span class="leader"></span><span class="price">100</span></li>
+            <li class="item"><span class="veg" role="img" aria-label="Veg"></span><span class="name">Brownie Shake</span><span class="leader"></span><span class="price">120</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section visit" id="visit">
+    <div class="wrap">
+      <h2>Find us</h2>
+      <div class="visit-grid">
+        <dl>
+          <dt>Address</dt>
+          <dd data-text="address">Shop 12, Vikas Marg, Laxmi Nagar, Delhi 110092</dd>
+          <dt>Phone</dt>
+          <dd><a data-call data-text="phone" href="tel:+919800000000">+91 98000 00000</a></dd>
+          <dt>Open</dt>
+          <dd data-text="hours">Every day, 10 am to 11 pm</dd>
+        </dl>
+        <div class="visit-actions">
+          <a class="btn btn-solid" data-map href="https://www.google.com/maps/search/?api=1&query=Laxmi+Nagar+Delhi"><svg class="icon"><use href="#i-pin"/></svg>Get directions</a>
+          <a class="btn btn-wa" data-wa href="https://wa.me/919800000000"><svg class="icon"><use href="#i-chat"/></svg>Message on WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© <span id="year">2026</span> <span data-text="name">Nukkad Cafe</span>. Website by <a href="https://wa.me/919800000000" data-agency>Your Agency Name</a>.</p>
+  </div>
+</footer>
+
+<!-- Floating bar that appears once something is added -->
+<button class="cartbar" id="cartbar" type="button" hidden>
+  <span id="cartbar-count">0 items</span>
+  <span id="cartbar-total">₹0</span>
+  <span class="go">View order</span>
+</button>
+
+<!-- Order sheet -->
+<dialog id="cart" aria-labelledby="cart-title">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h2 id="cart-title">Your order<span class="code" id="cart-code"></span></h2>
+      <button class="close" id="cart-close" type="button" aria-label="Close order">×</button>
+    </div>
+    <div class="sheet-body">
+      <ul class="cart-list" id="cart-list"></ul>
+      <p class="empty" id="cart-empty">Nothing here yet. Add items from the menu.</p>
+      <div class="total"><span>Total</span><span id="cart-total">₹0</span></div>
+
+      <fieldset class="grp" id="type-box">
+        <legend class="lbl">Order type</legend>
+        <div class="seg">
+          <label><input type="radio" name="otype" value="Dine-in" checked><span>Dine-in</span></label>
+          <label><input type="radio" name="otype" value="Delivery"><span>Delivery</span></label>
+        </div>
+      </fieldset>
+
+      <label class="field">Your name
+        <input id="f-name" type="text" autocomplete="name">
+      </label>
+      <label class="field"><span id="where-label">Table number</span>
+        <input id="f-where" type="text" autocomplete="off" placeholder="e.g. 4">
+      </label>
+      <label class="field">Note for the kitchen (optional)
+        <input id="f-note" type="text" placeholder="Less sugar, no onion…">
+      </label>
+
+      <fieldset class="grp" id="pay-box">
+        <legend class="lbl">Payment</legend>
+        <label class="opt"><input type="radio" name="pay" value="cash" checked><span id="pay-cash-label">Pay at the cafe</span></label>
+        <label class="opt" id="upi-opt"><input type="radio" name="pay" value="upi"><span>Pay now with UPI</span></label>
+      </fieldset>
+
+      <div class="upi-box" id="upi-box" hidden>
+        <a class="btn btn-solid" id="upi-pay" href="#"><span id="upi-label">Pay with UPI</span></a>
+        <p class="hint" id="upi-hint"></p>
+
+        <div class="upi-qr" id="upi-qr-wrap" hidden>
+          <p class="or">Or scan this QR with any UPI app</p>
+          <img id="upi-qr" alt="UPI QR code to pay this shop" width="640" height="727">
+          <p class="hint" id="upi-qr-hint"></p>
+          <button class="btn btn-line" id="upi-paid" type="button">I've paid by scanning</button>
+        </div>
+
+        <label class="field">UPI reference number (optional)
+          <input id="f-ref" type="text" inputmode="numeric" autocomplete="off">
+        </label>
+      </div>
+    </div>
+    <div class="sheet-foot">
+      <a class="btn btn-wa disabled" id="send" href="#" target="_blank" rel="noopener" aria-disabled="true"><svg class="icon"><use href="#i-chat"/></svg>Send order on WhatsApp</a>
+      <div class="foot-row">
+        <span class="hint" id="send-hint">WhatsApp opens with your order ready. Just press send.</span>
+        <button class="clear" id="clear" type="button">Clear order</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<nav class="dock" aria-label="Quick actions">
+  <a class="btn btn-call" data-call href="tel:+919800000000"><svg class="icon"><use href="#i-call"/></svg>Call</a>
+  <a class="btn btn-wa" data-wa href="https://wa.me/919800000000"><svg class="icon"><use href="#i-chat"/></svg>WhatsApp</a>
+  <a class="btn btn-map" data-map href="https://www.google.com/maps/search/?api=1&query=Laxmi+Nagar+Delhi"><svg class="icon"><use href="#i-pin"/></svg>Map</a>
+</nav>
+
+<script>
+  /* ===== EDIT ONLY THIS BLOCK for each new customer ===== */
+  const CONFIG = {
+    name: "Nukkad Cafe",
+    phone: "919800000000",          // country code + number, no + or spaces
+    whatsapp: "919800000000",       // orders arrive on this WhatsApp number
+    waMessage: "Hi! I saw your website and want to know more.",
+    address: "Shop 12, Vikas Marg, Laxmi Nagar, Delhi 110092",
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Laxmi+Nagar+Delhi",
+    openHour: 10,                   // 24-hour clock
+    closeHour: 23,
+    orderingEnabled: true,          // false = menu only, no Add buttons or cart
+    orderTypes: ["Dine-in", "Delivery"],   // use ["Dine-in"] or ["Delivery"] if the shop offers only one
+    upiId: "vimalkumarji112-1@okicici",   // the shop's real UPI ID. Use "" to turn UPI payment off
+    upiName: "Vimal Gautam",        // name on the UPI account (shown in the UPI app)
+    upiQr: "upi-qr.png",            // the shop's UPI QR image, kept next to index.html. Use "" to hide it
+    agencyName: "Your Agency Name",
+    agencyWhatsapp: "919800000000"
+  };
+  /* ====================================================== */
+
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => document.querySelectorAll(s);
+  const hour12 = (h) => {
+    const suffix = h % 24 >= 12 ? "pm" : "am";
+    const n = h % 12 === 0 ? 12 : h % 12;
+    return n + " " + suffix;
+  };
+  const prettyPhone = (p) =>
+    p.length === 12 && p.startsWith("91") ? "+91 " + p.slice(2, 7) + " " + p.slice(7) : "+" + p;
+  const rupee = (n) => "₹" + n.toLocaleString("en-IN");
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+  document.title = CONFIG.name + " | Laxmi Nagar, Delhi";
+  $$('[data-text="name"]').forEach((el) => (el.textContent = CONFIG.name));
+  $$('[data-text="address"]').forEach((el) => (el.textContent = CONFIG.address));
+  $$('[data-text="phone"]').forEach((el) => (el.textContent = prettyPhone(CONFIG.phone)));
+  $$('[data-text="hours"]').forEach(
+    (el) => (el.textContent = "Every day, " + hour12(CONFIG.openHour) + " to " + hour12(CONFIG.closeHour))
+  );
+  $$("[data-call]").forEach((el) => (el.href = "tel:+" + CONFIG.phone));
+  $$("[data-wa]").forEach(
+    (el) => (el.href = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(CONFIG.waMessage))
+  );
+  $$("[data-map]").forEach((el) => (el.href = CONFIG.mapsUrl));
+  $$("[data-agency]").forEach((el) => {
+    el.textContent = CONFIG.agencyName;
+    el.href = "https://wa.me/" + CONFIG.agencyWhatsapp;
+  });
+  $("#year").textContent = new Date().getFullYear();
+
+  /* Open / closed badge, using India time */
+  (function () {
+    const parts = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: false
+    }).formatToParts(new Date());
+    const h = Number(parts.find((p) => p.type === "hour").value) % 24;
+    const m = Number(parts.find((p) => p.type === "minute").value);
+    const now = h * 60 + m;
+    const open = CONFIG.openHour * 60;
+    const close = (CONFIG.closeHour % 24) * 60;
+    const isOpen = open < close ? now >= open && now < close : now >= open || now < close;
+
+    $("#status").classList.add(isOpen ? "open" : "closed");
+    $("#status-text").textContent = isOpen
+      ? "Open now, till " + hour12(CONFIG.closeHour)
+      : "Closed now, opens at " + hour12(CONFIG.openHour);
+  })();
+
+  /* ===== Cart: items go in, then one tap sends the order on WhatsApp ===== */
+  (function () {
+    if (!CONFIG.orderingEnabled) return;
+    document.documentElement.classList.add("ordering");
+
+    const KEY = "cafe-cart-v2";
+    const MAX_PER_ITEM = 20;
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const upiOn = !!CONFIG.upiId;
+    const upiDemo = /yourbank/i.test(CONFIG.upiId || "");
+    const TYPES = {
+      "Dine-in":  { where: "Table number",     ph: "e.g. 4",                     auto: "off",            cash: "Pay at the cafe",  line: "Table" },
+      "Delivery": { where: "Delivery address", ph: "House no, street, landmark", auto: "street-address", cash: "Pay on delivery", line: "Delivery address" }
+    };
+    let qrOk = !!CONFIG.upiQr;   // turns false if the QR image file is missing
+    let orderTypes = (CONFIG.orderTypes || []).filter((t) => TYPES[t]);
+    if (!orderTypes.length) orderTypes = ["Dine-in"];
+
+    const items = new Map();   // name -> { price, li, ctl }
+    const cart = new Map();    // name -> quantity
+    let orderCode = null;      // short number that links the payment to the order
+    let paidTapped = false;    // customer tapped the UPI pay button for the current cart
+
+    const dialog = $("#cart");
+    const bar = $("#cartbar");
+    const send = $("#send");
+    const pay = $("#upi-pay");
+    const val = (name) => {
+      const r = document.querySelector('input[name="' + name + '"]:checked');
+      return r ? r.value : "";
+    };
+    const newCode = () => String(Math.floor(1000 + Math.random() * 9000));
+
+    /* Show only the order types and payment options this shop offers */
+    $$('input[name="otype"]').forEach((r) => { if (!orderTypes.includes(r.value)) r.closest("label").remove(); });
+    document.querySelector('input[name="otype"][value="' + orderTypes[0] + '"]').checked = true;
+    $("#type-box").hidden = orderTypes.length < 2;
+    if (!upiOn) { $("#upi-opt").remove(); $("#pay-box").hidden = true; }
+    if (qrOk) {
+      const qrImg = $("#upi-qr");
+      qrImg.addEventListener("error", () => { qrOk = false; renderCart(); });
+      qrImg.src = CONFIG.upiQr;
+    }
+
+    $$(".menu li.item").forEach((li) => {
+      const name = li.querySelector(".name").textContent.trim();
+      const price = Number(li.querySelector(".price").textContent.replace(/[^\d.]/g, ""));
+      const ctl = document.createElement("span");
+      ctl.className = "ctl";
+      li.appendChild(ctl);
+      items.set(name, { price, li, ctl });
+    });
+
+    function save() {
+      try { localStorage.setItem(KEY, JSON.stringify({ c: Array.from(cart), code: orderCode })); } catch (e) {}
+    }
+    function load() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+        (saved.c || []).forEach(([name, qty]) => {
+          if (items.has(name) && qty > 0) cart.set(name, Math.min(qty, MAX_PER_ITEM));
+        });
+        if (cart.size) orderCode = /^\d{4}$/.test(saved.code || "") ? saved.code : newCode();
+      } catch (e) {}
+    }
+
+    const stepperHTML = (name, qty) =>
+      '<span class="stepper">' +
+      '<button type="button" data-act="dec" data-name="' + esc(name) + '" aria-label="Remove one ' + esc(name) + '">−</button>' +
+      '<span class="qty" aria-live="polite">' + qty + '</span>' +
+      '<button type="button" data-act="inc" data-name="' + esc(name) + '" aria-label="Add one more ' + esc(name) + '">+</button>' +
+      '</span>';
+
+    function renderItem(name) {
+      const { ctl } = items.get(name);
+      const qty = cart.get(name) || 0;
+      ctl.innerHTML = qty === 0
+        ? '<button class="add" type="button" data-act="inc" data-name="' + esc(name) + '" aria-label="Add ' + esc(name) + ' to order">Add</button>'
+        : stepperHTML(name, qty);
+    }
+
+    function totals() {
+      let count = 0, sum = 0;
+      cart.forEach((qty, name) => { count += qty; sum += qty * items.get(name).price; });
+      return { count, sum };
+    }
+
+    const upiLink = (sum) =>
+      "upi://pay?pa=" + CONFIG.upiId +
+      "&pn=" + encodeURIComponent(CONFIG.upiName || CONFIG.name) +
+      "&am=" + sum.toFixed(2) +
+      "&cu=INR&tn=" + encodeURIComponent("Order " + orderCode);
+
+    function buildMessage(sum) {
+      const type = val("otype"), T = TYPES[type];
+      const lines = ["Hi " + CONFIG.name + "! New order #" + orderCode, "Type: " + type];
+      cart.forEach((qty, name) => lines.push("- " + qty + " x " + name + " (" + rupee(qty * items.get(name).price) + ")"));
+      lines.push("", "Total: " + rupee(sum));
+      const who = $("#f-name").value.trim();
+      const where = $("#f-where").value.trim();
+      const note = $("#f-note").value.trim();
+      if (who) lines.push("Name: " + who);
+      if (where) lines.push(T.line + ": " + where);
+      if (note) lines.push("Note: " + note);
+      if (upiOn && val("pay") === "upi") {
+        const ref = $("#f-ref").value.trim();
+        lines.push("Payment: UPI " + rupee(sum) + " sent" + (ref ? " (ref " + ref + ")" : "") + ". Please check your UPI app.");
+      } else {
+        lines.push("Payment: " + T.cash);
+      }
+      return lines.join("\n");
+    }
+
+    function renderCart() {
+      const { count, sum } = totals();
+      const type = val("otype"), T = TYPES[type];
+      const upi = upiOn && val("pay") === "upi";
+      const whereInput = $("#f-where");
+      const where = whereInput.value.trim();
+
+      bar.hidden = count === 0;
+      document.body.classList.toggle("has-cart", count > 0);
+      $("#cartbar-count").textContent = count + (count === 1 ? " item" : " items");
+      $("#cartbar-total").textContent = rupee(sum);
+
+      $("#cart-code").textContent = orderCode ? "#" + orderCode : "";
+      $("#cart-list").innerHTML = Array.from(cart).map(([name, qty]) =>
+        '<li><span class="ci-name">' + esc(name) + '</span>' + stepperHTML(name, qty) +
+        '<span class="ci-price">' + rupee(qty * items.get(name).price) + '</span></li>'
+      ).join("");
+      $("#cart-empty").hidden = count > 0;
+      $("#cart-total").textContent = rupee(sum);
+
+      $("#where-label").textContent = T.where;
+      whereInput.placeholder = T.ph;
+      whereInput.setAttribute("autocomplete", T.auto);
+      $("#pay-cash-label").textContent = T.cash;
+
+      $("#upi-box").hidden = !upi;
+      $("#upi-qr-wrap").hidden = !(upi && qrOk);
+      pay.classList.toggle("disabled", count === 0);
+      $("#upi-paid").classList.toggle("disabled", count === 0);
+      $("#upi-paid").textContent = paidTapped ? "Marked as paid" : "I've paid by scanning";
+      $("#upi-qr-hint").textContent = count
+        ? "Enter " + rupee(sum) + " in your UPI app and add order #" + orderCode + " as the note."
+        : "Add items to see the amount to pay.";
+      if (upi) {
+        $("#upi-label").textContent = count ? "Pay " + rupee(sum) + " with UPI" : "Pay with UPI";
+        pay.href = count ? upiLink(sum) : "#";
+        $("#upi-hint").textContent = paidTapped
+          ? "Done paying? Add your UPI reference below if you have it, then send your order."
+          : "Opens your UPI app with " + (count ? rupee(sum) : "the amount") + " filled in. After paying, come back here to send your order.";
+      }
+
+      const ready = count > 0 && where !== "" && (!upi || paidTapped);
+      let hint = "WhatsApp opens with your order ready. Just press send.";
+      if (count > 0 && where === "") hint = "Add your " + T.where.toLowerCase() + " to continue.";
+      else if (count > 0 && upi && !paidTapped) hint = "Pay with UPI above, then send your order.";
+      $("#send-hint").textContent = hint;
+
+      send.classList.toggle("disabled", !ready);
+      send.setAttribute("aria-disabled", String(!ready));
+      send.href = ready ? "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(buildMessage(sum)) : "#";
+    }
+
+    function change(name, delta) {
+      const qty = Math.max(0, Math.min(MAX_PER_ITEM, (cart.get(name) || 0) + delta));
+      if (qty === 0) cart.delete(name); else cart.set(name, qty);
+      if (cart.size === 0) orderCode = null; else if (!orderCode) orderCode = newCode();
+      paidTapped = false;                       // the amount changed, so pay again
+      save();
+      renderItem(name);
+      renderCart();
+    }
+
+    /* One click handler for every + / − / Add button, on the menu and in the sheet */
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-act]");
+      if (!btn) return;
+      const name = btn.dataset.name, act = btn.dataset.act;
+      const scope = btn.closest("dialog") || items.get(name).li;
+      change(name, act === "inc" ? 1 : -1);
+      const find = (a) => Array.from(scope.querySelectorAll("[data-act]")).find((b) => b.dataset.act === a && b.dataset.name === name);
+      (find(act) || find("inc") || $("#cart-close")).focus();   // keep keyboard focus in place
+    });
+
+    /* UPI: opens the customer's UPI app with the amount filled in */
+    pay.addEventListener("click", (e) => {
+      const hint = $("#upi-hint");
+      if (!cart.size) { e.preventDefault(); return; }
+      if (upiDemo) {
+        e.preventDefault();
+        hint.textContent = "Demo mode: add the shop's real UPI ID in the CONFIG block to turn payments on.";
+        return;
+      }
+      if (!isMobile) {
+        e.preventDefault();
+        hint.textContent = qrOk
+          ? "The Pay button works on phones. On a computer, scan the QR code below with your phone."
+          : "UPI payment works on phones. Open this page on your phone, or choose to pay at the cafe.";
+        return;
+      }
+      paidTapped = true;
+      renderCart();
+    });
+
+    /* Paid by scanning the QR: the customer confirms it themselves */
+    $("#upi-paid").addEventListener("click", () => {
+      if (!cart.size) return;
+      paidTapped = true;
+      renderCart();
+    });
+
+    bar.addEventListener("click", () => dialog.showModal());
+    $("#cart-close").addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });
+    send.addEventListener("click", (e) => { if (send.getAttribute("aria-disabled") === "true") e.preventDefault(); });
+    $("#clear").addEventListener("click", () => {
+      cart.clear(); orderCode = null; paidTapped = false; save();
+      items.forEach((_, name) => renderItem(name));
+      renderCart();
+    });
+    ["#f-name", "#f-where", "#f-note", "#f-ref"].forEach((id) => $(id).addEventListener("input", renderCart));
+    $$('input[name="otype"], input[name="pay"]').forEach((r) =>
+      r.addEventListener("change", () => { paidTapped = false; renderCart(); })
+    );
+
+    load();
+    items.forEach((_, name) => renderItem(name));
+    renderCart();
+  })();
+</script>
+</body>
+</html>
